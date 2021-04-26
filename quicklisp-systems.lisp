@@ -105,3 +105,5 @@
   (format t "Downloading quicklisp systems file from ~a ~%" url)
   (dex:fetch url *systems-file* :if-exists :supersede)
   (format t "Systems file downloaded to ~a~%" *systems-file*))
+
+(provide :quicklisp-systems)

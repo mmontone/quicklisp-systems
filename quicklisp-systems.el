@@ -6,6 +6,10 @@
 
 (require 'slime)
 
+(defun quicklisp-systems--kill-current-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer)))
+
 (defun quicklisp-apropos-systems (pattern)
   "Apropos Quicklisp systems."
   (interactive "sQuicklisp apropos:")
@@ -13,8 +17,7 @@
 
 (defun quicklisp-apropos-systems-names (pattern)
   "Apropos Quicklisp systems by name."
-  (interactive "sQuicklisp apropos:")
-  )
+  (interactive "sQuicklisp apropos:"))
 
 (defun quicklisp-load (system-name)
   "Load Quicklisp system."
@@ -23,20 +26,29 @@
 
 (defalias 'quickload 'quicklisp-load)
 
+(defun quicklisp-systems--print-systems-list (systems)
+  (dolist (system systems)
+    (insert-text-button (getf system :name)
+			'face 'bold
+			'action (lambda (btn) (error "TODO"))
+			'follow-link t)
+    (newline)
+    (when (and (getf system :description)
+	       (stringp (getf system :description)))
+      (insert (getf system :description))
+      (newline))))
+
 (defun quicklisp-systems-list ()
   "Show a buffer with all quicklisp systems"
   (interactive)
   (let ((systems (slime-eval `(quicklisp-systems::list-all-systems))))
-    (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
-      (with-current-buffer buffer
-	(dolist (system systems)
-	  (insert (propertize (getf system :name) 'face 'bold))
-	  (newline)
-	  (when (and (getf system :description)
-		     (stringp (getf system :description)))
-	    (insert (getf system :description))
-	    (newline)))
-	(quicklisp-systems--open-buffer)))))
+    (if (null systems)
+	(when (yes-or-no-p "Systems list is empty. Try download?")
+	  (quicklisp-systems-update))
+      (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
+	(with-current-buffer buffer
+	  (quicklisp-systems--print-systems-list systems)
+	  (quicklisp-systems--open-buffer))))))
 
 (defalias 'quicklisp-systems 'quicklisp-systems-list)
 
