@@ -68,5 +68,26 @@
                 while system
                 collect system))))
 
+(defmacro do-systems ((system &optional (path *systems-file*)) &body body)
+  (alexandria:with-gensyms (f)
+  `(with-open-file (,f ,path :direction :input :external-format :utf-8)
+     (loop for ,system := (read ,f nil nil)
+	   while ,system
+	   do ,@body))))
+
 (defun find-system-info (name)
-  (find name *systems-info* :test 'equalp :key (lambda (x) (getf x :name))))
+  (do-systems (system)
+    (when (equalp (getf system :name) name)
+      (return-from find-system-info system))))
+
+(defun apropos-system (string &optional search-description)
+  (let (systems)
+    (do-systems (system)
+      (when (or (search string (getf system :name) :test 'equalp)
+		(and search-description
+		     (or (and (getf system :description)
+			      (search string (getf system :description) :test 'equalp))
+			 (and (getf system :long-description)
+			      (search string (getf system :long-description) :test 'equalp)))))
+	(push system systems)))
+    systems))
