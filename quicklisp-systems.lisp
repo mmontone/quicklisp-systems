@@ -64,7 +64,7 @@
 (defun read-systems-file (&optional (path (asdf:system-relative-pathname :quicklisp-systems "systems")))
   (setq *systems-info*
         (with-open-file (f path :direction :input :external-format :utf-8)
-          (loop for system := (first (read f nil nil))
+          (loop for system := (read f nil nil)
                 while system
                 collect system))))
 
