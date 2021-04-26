@@ -7,6 +7,7 @@
 (defvar *systems-file* (asdf:system-relative-pathname :quicklisp-systems "systems"))
 
 (defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
+(defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
 
 (defun register-all-asdf-files (&optional (quicklisp-projects-directory *quicklisp-projects-directory*))
   (let ((output
@@ -93,8 +94,6 @@
                               (search string (getf system :long-description) :test 'equalp)))))
         (push system systems)))
     systems))
-
-(defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
 
 (defun download-systems-file (&optional (url *systems-file-url*))
   (format t "Downloading quicklisp systems file from ~a ~%" url)
