@@ -90,6 +90,13 @@
 ;; (quicklisp-systems-show-system "hunchentoot")
 ;; (quicklisp-systems-show-system "ten")
 
+(define-slime-contrib quicklisp-systems
+  "Manage Quicklisp from Emacs"
+  (:authors "Mariano Montone")
+  (:license "GPL")
+  ;;(:slime-dependencies slime-asdf)
+  (:swank-dependencies quicklisp-systems))
+
 (provide 'quicklisp-systems)
 
 ;;; quicklisp-systems.el ends here

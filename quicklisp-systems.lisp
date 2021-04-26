@@ -1,10 +1,18 @@
 ;;;; quicklisp-systems.lisp
 
+(require :alexandria)
+(require :dexador)
+(require :asdf)
+(require :quicklisp)
+
+(defpackage #:quicklisp-systems
+  (:use #:cl))
+
 (in-package #:quicklisp-systems)
 
 (defparameter *quicklisp-projects-directory* #p"~/quicklisp-controller/")
 (defvar *systems-info*)
-(defvar *systems-file* (asdf:system-relative-pathname :quicklisp-systems "systems"))
+(defvar *systems-file* (merge-pathnames "systems" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
 
 (defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
 (defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
