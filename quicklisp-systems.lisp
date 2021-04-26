@@ -3,6 +3,8 @@
 (in-package #:quicklisp-systems)
 
 (defparameter *quicklisp-projects-directory* #p"~/quicklisp-controller/")
+(defvar *systems-info*)
+(defvar *systems-file* (asdf:system-relative-pathname :quicklisp-systems "systems"))
 
 (defun register-all-asdf-files (&optional (quicklisp-projects-directory *quicklisp-projects-directory*))
   (let ((output
@@ -44,24 +46,22 @@
                       :description ,(asdf/component:component-description system)
                       :long-description ,(asdf/component:component-long-description system)
                       :author ,(slot-value system 'asdf/system::author)
-		      :mailto ,(slot-value system 'asdf/system::mailto)
+                      :mailto ,(slot-value system 'asdf/system::mailto)
                       :maintainer ,(slot-value system 'asdf/system::maintainer)
                       :homepage ,(slot-value system 'asdf/system::homepage)
                       :bug-tracker ,(slot-value system 'asdf/system::bug-tracker)
-		      :version ,(slot-value system 'asdf/system::version)
+                      :version ,(slot-value system 'asdf/system::version)
                       :license ,(slot-value system 'asdf/system::licence))
                     stream)
              (terpri stream)))
 
-(defun write-systems-file (&optional (path (asdf:system-relative-pathname :quicklisp-systems "systems")))
+(defun write-systems-file (&optional (path *systems-file*))
   (with-open-file (f path :direction :output :external-format :utf-8
                           :if-exists :supersede)
     (serialize-asdf-systems (asdf/system-registry:registered-systems*)
                             f)))
 
-(defvar *systems-info*)
-
-(defun read-systems-file (&optional (path (asdf:system-relative-pathname :quicklisp-systems "systems")))
+(defun read-systems-file (&optional (path *systems-file*))
   (setq *systems-info*
         (with-open-file (f path :direction :input :external-format :utf-8)
           (loop for system := (read f nil nil)
