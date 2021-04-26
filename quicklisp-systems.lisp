@@ -70,10 +70,10 @@
 
 (defmacro do-systems ((system &optional (path *systems-file*)) &body body)
   (alexandria:with-gensyms (f)
-  `(with-open-file (,f ,path :direction :input :external-format :utf-8)
-     (loop for ,system := (read ,f nil nil)
-	   while ,system
-	   do ,@body))))
+    `(with-open-file (,f ,path :direction :input :external-format :utf-8)
+       (loop for ,system := (read ,f nil nil)
+             while ,system
+             do ,@body))))
 
 (defun find-system-info (name)
   (do-systems (system)
@@ -84,10 +84,10 @@
   (let (systems)
     (do-systems (system)
       (when (or (search string (getf system :name) :test 'equalp)
-		(and search-description
-		     (or (and (getf system :description)
-			      (search string (getf system :description) :test 'equalp))
-			 (and (getf system :long-description)
-			      (search string (getf system :long-description) :test 'equalp)))))
-	(push system systems)))
+                (and search-description
+                     (or (and (getf system :description)
+                              (search string (getf system :description) :test 'equalp))
+                         (and (getf system :long-description)
+                              (search string (getf system :long-description) :test 'equalp)))))
+        (push system systems)))
     systems))
