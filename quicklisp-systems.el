@@ -23,10 +23,6 @@
 
 (defalias 'quickload 'quicklisp-load)
 
-(defun quicklisp-systems-download ()
-  "Download quicklisp-systems list."
-  (interactive))
-
 (defun quicklisp-systems-list ()
   "Show a buffer with all quicklisp systems"
   (interactive)
@@ -47,7 +43,9 @@
 (defun quicklisp-systems-update ()
   "Update the list of Quicklisp systems."
   (interactive)
-  (quicklisp-systems-download))
+  (message "Downloading list of Quicklisp systems...")
+  (slime-eval `(quicklisp-systems::download-systems-file))
+  (message "Quicklisp systems updated."))
 
 (defun quicklisp-systems--open-buffer ()
   (let ((buffer (current-buffer)))
