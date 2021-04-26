@@ -6,6 +6,8 @@
 (defvar *systems-info*)
 (defvar *systems-file* (asdf:system-relative-pathname :quicklisp-systems "systems"))
 
+(defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
+
 (defun register-all-asdf-files (&optional (quicklisp-projects-directory *quicklisp-projects-directory*))
   (let ((output
           (with-output-to-string (s)
@@ -17,10 +19,10 @@
       (loop for line := (read-line s nil nil)
             while line
             when (and (probe-file line)
-                      ;;(not (search "asdf" line :test 'equalp))
-                      (not (search "cl-quakeinfo" line :test 'equalp))
-                      (not (search "qt-libs" line :test 'equalp))
-                      (not (search "cl-geocode" line :test 'equalp)))
+		      ;; conflictive asdf system files
+		      (not (some (lambda (conflictive-system-name)
+				   (search conflictive-system-name line :test 'equalp))
+				 *conflictive-asdf-files*)))
               do
                  (format *standard-output* "Loading ~a" line)
                  (handler-case (progn
