@@ -91,3 +91,10 @@
                               (search string (getf system :long-description) :test 'equalp)))))
         (push system systems)))
     systems))
+
+(defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
+
+(defun download-systems-file (&optional (url *systems-file-url*))
+  (format t "Downloading quicklisp systems file from ~a ~%" url)
+  (dex:fetch url *systems-file* :if-exists :supersede)
+  (format t "Systems file downloaded to ~a~%" *systems-file*))
