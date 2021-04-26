@@ -14,4 +14,9 @@
 (defun quicklisp-systems-download ()
   (interactive))
 
+(defun quicklisp-systems ()
+  (interactive)
+  "Shows a buffer with all quicklisp systems"
+  )
+
 (provide 'quicklisp-systems)
