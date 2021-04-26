@@ -78,6 +78,12 @@
              while ,system
              do ,@body))))
 
+(defun list-all-systems ()
+  (let (systems)
+    (do-systems (system)
+      (push system systems))
+    (sort systems 'string< :key (lambda (x) (getf x :name)))))
+
 (defun find-system-info (name)
   (do-systems (system)
     (when (equalp (getf system :name) name)

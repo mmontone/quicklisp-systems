@@ -27,9 +27,22 @@
   "Download quicklisp-systems list."
   (interactive))
 
-(defun quicklisp-systems ()
+(defun quicklisp-systems-list ()
   "Show a buffer with all quicklisp systems"
-  (interactive))
+  (interactive)
+  (let ((systems (slime-eval `(quicklisp-systems::list-all-systems))))
+    (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
+      (with-current-buffer buffer
+	(dolist (system systems)
+	  (insert (propertize (getf system :name) 'face 'bold))
+	  (newline)
+	  (when (and (getf system :description)
+		     (stringp (getf system :description)))
+	    (insert (getf system :description))
+	    (newline)))
+	(quicklisp-systems--open-buffer)))))
+
+(defalias 'quicklisp-systems 'quicklisp-systems-list)
 
 (defun quicklisp-systems-update ()
   "Update the list of Quicklisp systems."
