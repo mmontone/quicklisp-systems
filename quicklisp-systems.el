@@ -5,6 +5,7 @@
 ;;; Code:
 
 (require 'slime)
+(require 'cl)
 
 (defun quicklisp-systems--kill-current-buffer ()
   (interactive)
@@ -30,20 +31,22 @@
 
 (defun quicklisp-systems--print-systems-list (systems)
   (dolist (system systems)
-    (insert-text-button (getf system :name)
-			'face 'bold
-			'action (lambda (btn) (error "TODO"))
-			'follow-link t)
-    (newline)
-    (when (and (getf system :description)
-	       (stringp (getf system :description)))
-      (insert (getf system :description))
-      (newline))))
+    (cl-flet ((show-system (btn)
+                           (quicklisp-systems-show-system (getf system :name))))
+      (insert-text-button (getf system :name)
+                          'face 'bold
+                          'action (function show-system)
+                          'follow-link t)
+      (newline)
+      (when (and (getf system :description)
+                 (stringp (getf system :description)))
+        (insert (getf system :description))
+        (newline)))))
 
 (defun quicklisp-systems--check-systems-list ()
   (when (not (slime-eval `(quicklisp-systems::check-systems-list)))
     (when (yes-or-no-p "Systems list is empty. Download? ")
-	  (quicklisp-systems-update))))
+      (quicklisp-systems-update))))
 
 (defun quicklisp-systems-list ()
   "Show a buffer with all quicklisp systems"
@@ -52,8 +55,8 @@
   (let ((systems (slime-eval `(quicklisp-systems::list-all-systems))))
     (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
       (with-current-buffer buffer
-	(quicklisp-systems--print-systems-list systems)
-	(quicklisp-systems--open-buffer)))))
+        (quicklisp-systems--print-systems-list systems)
+        (quicklisp-systems--open-buffer)))))
 
 (defalias 'quicklisp-systems 'quicklisp-systems-list)
 
@@ -78,25 +81,25 @@
   (interactive "sShow Quicklisp system:")
   (let ((system (slime-eval `(quicklisp-systems::find-system-info ,system-name))))
     (if (null system)
-	(error "Quicklisp system not found: %s" system-name)
+        (error "Quicklisp system not found: %s" system-name)
       (let ((buffer (get-buffer-create (format "*quicklisp-systems: %s*" system-name))))
-	(with-current-buffer buffer
-	  (insert (propertize (getf system :name) 'face 'bold))
-	  (newline 2)
-	  (when (getf system :description)
-	    (insert (getf system :description))
-	    (newline 2))
-	  (insert-button "Load"
-			 'action (lambda (btn)
-				   (quicklisp-load system-name))
-			 'follow-link t
-			 'help-echo "Load Quicklisp system")
-	  (newline 2)
-	  (when (getf system :long-description)
-	    (insert (getf system :long-description))
-	    (newline 2))
-	  
-	  (quicklisp-systems--open-buffer))))))
+        (with-current-buffer buffer
+          (insert (propertize (getf system :name) 'face 'bold))
+          (newline 2)
+          (when (getf system :description)
+            (insert (getf system :description))
+            (newline 2))
+          (insert-button "Load"
+                         'action (lambda (btn)
+                                   (quicklisp-load system-name))
+                         'follow-link t
+                         'help-echo "Load Quicklisp system")
+          (newline 2)
+          (when (getf system :long-description)
+            (insert (getf system :long-description))
+            (newline 2))
+
+          (quicklisp-systems--open-buffer))))))
 
 ;; (quicklisp-systems-show-system "hunchentoot")
 ;; (quicklisp-systems-show-system "ten")
