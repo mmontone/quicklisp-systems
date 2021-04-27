@@ -222,11 +222,12 @@
                          'action (lambda (btn)
                                    (quicklisp-load system-name))
                          'follow-link t
-                         'help-echo "Load Quicklisp system")
+                         'help-echo "Load Quicklisp system"
+			 'face '(:box (:line-width 2 :color "dark grey") :background "light grey" :foreground "black"))
+	  (newline 2)
 
           (when (getf system :long-description)
-            (newline 2)
-            (insert (quicklisp-systems--horizontal-line))
+	    (insert (quicklisp-systems--horizontal-line))
             (newline 2)
             (insert (quicklisp-systems--format-text (getf system :long-description)))
             (newline 2))
