@@ -40,17 +40,20 @@
       (insert (getf system :description))
       (newline))))
 
+(defun quicklisp-systems--check-systems-list ()
+  (when (not (slime-eval `(quicklisp-systems::check-systems-list)))
+    (when (yes-or-no-p "Systems list is empty. Download? ")
+	  (quicklisp-systems-update))))
+
 (defun quicklisp-systems-list ()
   "Show a buffer with all quicklisp systems"
   (interactive)
+  (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::list-all-systems))))
-    (if (null systems)
-	(when (yes-or-no-p "Systems list is empty. Try download?")
-	  (quicklisp-systems-update))
-      (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
-	(with-current-buffer buffer
-	  (quicklisp-systems--print-systems-list systems)
-	  (quicklisp-systems--open-buffer))))))
+    (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
+      (with-current-buffer buffer
+	(quicklisp-systems--print-systems-list systems)
+	(quicklisp-systems--open-buffer)))))
 
 (defalias 'quicklisp-systems 'quicklisp-systems-list)
 
