@@ -9,7 +9,7 @@
 
 (in-package #:quicklisp-systems)
 
-(defparameter *quicklisp-projects-directory* #p"~/quicklisp-controller/")
+(defparameter *quicklisp-controller-directory* #p"~/quicklisp-controller/")
 (defvar *systems-file* (merge-pathnames "systems" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
 
 (defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
@@ -23,12 +23,12 @@
 	       while ,system
 	       do ,@body)))))
 
-(defun register-all-asdf-files (&optional (quicklisp-projects-directory *quicklisp-projects-directory*))
+(defun register-all-asdf-files (&optional (quicklisp-controller-directory *quicklisp-controller-directory*))
   (let ((output
           (with-output-to-string (s)
             (uiop/run-program:run-program
              (format nil "/usr/bin/find -P ~a -name *.asd"
-                     (merge-pathnames #p"upstream-cache/" quicklisp-projects-directory))
+                     (merge-pathnames #p"upstream-cache/" quicklisp-controller-directory))
              :output s))))
     (with-input-from-string (s output)
       (loop for line := (read-line s nil nil)
