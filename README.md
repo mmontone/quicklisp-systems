@@ -1,9 +1,10 @@
 # quicklisp-systems
-### _Your Name <your.name@example.com>_
 
-This is a project to do ... something.
+Browse and load Quicklisp systems from Emacs.
+
+Author: Mariano Montone <marianomontone@gmail.com>
 
 ## License
 
-Specify license here
+MIT
 
