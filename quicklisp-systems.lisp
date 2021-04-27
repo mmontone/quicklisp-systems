@@ -112,6 +112,14 @@
         (push system systems)))
     systems))
 
+(defun apropos-author (author-name)
+  (let (systems)
+    (do-systems (system)
+      (when (and (getf system :author)
+		 (search author-name (getf system :author) :test 'equalp))
+        (push system systems)))
+    systems))
+
 (defun download-systems-file (&optional (url *systems-file-url*))
   (format t "Downloading quicklisp systems file from ~a ~%" url)
   (dex:fetch url *systems-file* :if-exists :supersede)

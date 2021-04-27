@@ -23,10 +23,20 @@
 
 (defun quicklisp-systems-apropos-name (pattern)
   "Apropos Quicklisp systems by name."
-  (interactive "sQuicklisp apropos:")
+  (interactive "sQuicklisp apropos system name:")
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern))))
-    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos %s by name*" pattern))))
+    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos name %s*" pattern))))
+      (with-current-buffer buffer
+        (quicklisp-systems--print-systems-list systems)
+        (quicklisp-systems--open-buffer)))))
+
+(defun quicklisp-systems-apropos-author (pattern)
+  "Apropos Quicklisp systems by author."
+  (interactive "sQuicklisp apropos author:")
+  (quicklisp-systems--check-systems-list)
+  (let ((systems (slime-eval `(quicklisp-systems::apropos-author ,pattern))))
+    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos author %s*" pattern))))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
@@ -100,6 +110,19 @@
           (when (getf system :description)
             (insert (getf system :description))
             (newline 2))
+	  (when (stringp (getf system :author))
+	    (insert (propertize "Author: " 'face 'bold))
+	    (insert (getf system :author))
+	    (newline))
+	  (when (stringp (getf system :homepage))
+	    (insert (propertize "Homepage: " 'face 'bold))
+	    (insert (getf system :homepage))
+	    (newline))
+	  (when (stringp (getf system :bug-tracker))
+	    (insert (propertize "Bug tracker: " 'face 'bold))
+	    (insert (getf system :bug-tracker))
+	    (newline))
+	  (newline)
           (insert-button "Load"
                          'action (lambda (btn)
                                    (quicklisp-load system-name))
