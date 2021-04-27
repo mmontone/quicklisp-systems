@@ -11,14 +11,25 @@
   (interactive)
   (kill-buffer (current-buffer)))
 
-(defun quicklisp-apropos-systems (pattern)
+(defun quicklisp-systems-apropos (pattern)
   "Apropos Quicklisp systems."
   (interactive "sQuicklisp apropos:")
-  )
+  (quicklisp-systems--check-systems-list)
+  (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern t))))
+    (let ((buffer (get-buffer-create "*quicklisp-systems: apropos system list*")))
+      (with-current-buffer buffer
+        (quicklisp-systems--print-systems-list systems)
+        (quicklisp-systems--open-buffer)))))
 
-(defun quicklisp-apropos-systems-names (pattern)
+(defun quicklisp-systems-apropos-names (pattern)
   "Apropos Quicklisp systems by name."
-  (interactive "sQuicklisp apropos:"))
+  (interactive "sQuicklisp apropos:")
+  (quicklisp-systems--check-systems-list)
+  (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern))))
+    (let ((buffer (get-buffer-create "*quicklisp-systems: apropos system list*")))
+      (with-current-buffer buffer
+        (quicklisp-systems--print-systems-list systems)
+        (quicklisp-systems--open-buffer)))))
 
 (defun quicklisp-load (system-name)
   "Load Quicklisp system."
