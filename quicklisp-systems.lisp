@@ -11,8 +11,10 @@
 
 (defparameter *quicklisp-controller-directory* #p"~/quicklisp-controller/")
 (defvar *systems-file* (merge-pathnames "systems" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
-
-(defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
+(defvar *failed-asdf-files* nil
+  "Contains a list of ASDF files that failed to be loaded and the error, after calling REGISTER-ALL-ASDF-FILES.")
+(defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode")
+  "Some ASDF files cause conflicts when trying to be loaded. These are ignored.")
 (defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
 
 (defmacro do-systems ((system &optional (path *systems-file*)) &body body)
@@ -24,6 +26,7 @@
 	       do ,@body)))))
 
 (defun register-all-asdf-files (&optional (quicklisp-controller-directory *quicklisp-controller-directory*))
+  (setf *failed-asdf-files* nil)
   (let ((output
           (with-output-to-string (s)
             (uiop/run-program:run-program
@@ -45,6 +48,7 @@
                                  (format *standard-output* ". Success.~%"))
                    (error (e)
                      ;;(error e)
+		     (push (cons line e) *failed-asdf-files*)
                      (format *standard-output* ". ERROR.~%")
                      ))))))
 
