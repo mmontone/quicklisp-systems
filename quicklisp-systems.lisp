@@ -40,6 +40,7 @@
 
 (defun register-all-asdf-files (&optional (quicklisp-controller-directory *quicklisp-controller-directory*))
   (setf *failed-asdf-files* nil)
+  (format *standard-output* "Finding ASDF files...~%")
   (let ((output
           (with-output-to-string (s)
             (uiop/run-program:run-program
@@ -85,7 +86,8 @@
                       :homepage ,(slot-value system 'asdf/system::homepage)
                       :bug-tracker ,(slot-value system 'asdf/system::bug-tracker)
                       :version ,(slot-value system 'asdf/system::version)
-                      :license ,(slot-value system 'asdf/system::licence))
+                      :license ,(slot-value system 'asdf/system::licence)
+		      :depends-on ,(slot-value system 'asdf/system::depends-on))
                     stream)
              (terpri stream)))
 
