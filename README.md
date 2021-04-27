@@ -41,4 +41,4 @@ Use `q` to kill individual buffers, and `Q` to kill all quicklisp-systems buffer
 
 ## License
 
-MIT
+GPL
