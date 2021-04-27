@@ -7,6 +7,9 @@
 (require 'slime)
 (require 'cl)
 
+(defun quicklisp-systems--horizontal-line (&rest width)
+  (make-string (or width 80) ?\u2500))
+
 (defun quicklisp-systems--propertize-links (string)
   "Convert URL links in strings to buttons."
   (replace-regexp-in-string
@@ -155,8 +158,11 @@
                                    (quicklisp-load system-name))
                          'follow-link t
                          'help-echo "Load Quicklisp system")
-          (newline 2)
+          
           (when (getf system :long-description)
+	    (newline 2)
+	    (insert (quicklisp-systems--horizontal-line))
+	    (newline 2)
             (insert (quicklisp-systems--format-text (getf system :long-description)))
             (newline 2))
 
