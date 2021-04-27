@@ -1,8 +1,8 @@
+;; -*- lexical-binding: t -*-
+
 ;;; quicklisp-systems --- Utilities for querying Quicklisp systems.
 ;;; Commentary:
 ;;; Code:
-
-;; -*- lexical-binding: t -*-
 
 (require 'slime)
 
@@ -22,7 +22,9 @@
 (defun quicklisp-load (system-name)
   "Load Quicklisp system."
   (interactive "sQuickload:")
-  (slime-eval `(ql:quickload ,system-name)))
+  (message "Quickloading %s..." system-name)
+  (slime-eval `(ql:quickload ,system-name))
+  (message "%s loaded." system-name))
 
 (defalias 'quickload 'quicklisp-load)
 
@@ -76,11 +78,17 @@
 	(error "Quicklisp system not found: %s" system-name)
       (let ((buffer (get-buffer-create (format "*quicklisp-systems: %s*" system-name))))
 	(with-current-buffer buffer
-	  (insert (getf system :name))
+	  (insert (propertize (getf system :name) 'face 'bold))
 	  (newline 2)
 	  (when (getf system :description)
 	    (insert (getf system :description))
 	    (newline 2))
+	  (insert-button "Load"
+			 'action (lambda (btn)
+				   (quicklisp-load system-name))
+			 'follow-link t
+			 'help-echo "Load Quicklisp system")
+	  (newline 2)
 	  (when (getf system :long-description)
 	    (insert (getf system :long-description))
 	    (newline 2))
