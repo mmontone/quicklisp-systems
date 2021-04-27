@@ -87,7 +87,7 @@
                       :bug-tracker ,(slot-value system 'asdf/system::bug-tracker)
                       :version ,(slot-value system 'asdf/system::version)
                       :license ,(slot-value system 'asdf/system::licence)
-		      :depends-on ,(slot-value system 'asdf/system::depends-on))
+		      :depends-on ,(remove-if-not 'stringp (slot-value system 'asdf/system::depends-on)))
                     stream)
              (terpri stream)))
 
