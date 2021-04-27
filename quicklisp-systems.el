@@ -60,32 +60,44 @@
              (string-prefix-p "*quicklisp-systems" (buffer-name buffer)))
            (buffer-list))))
 
-(defun quicklisp-systems-apropos (pattern)
+(defun* quicklisp-systems-apropos (pattern)
   "Apropos Quicklisp systems."
   (interactive "sQuicklisp apropos:")
   (quicklisp-systems--check-systems-list)
-  (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern t))))
-    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos %s*" pattern))))
+  (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern t)))
+	(buffer-name (format "*quicklisp-systems: apropos %s*" pattern)))
+    (when (get-buffer buffer-name)
+      (pop-to-buffer buffer-name)
+      (return-from quicklisp-systems-apropos))
+    (let ((buffer (get-buffer-create buffer-name)))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
 
-(defun quicklisp-systems-apropos-name (pattern)
+(defun* quicklisp-systems-apropos-name (pattern)
   "Apropos Quicklisp systems by name."
   (interactive "sQuicklisp apropos system name:")
   (quicklisp-systems--check-systems-list)
-  (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern))))
-    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos name %s*" pattern))))
+  (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern)))
+	(buffer-name (format "*quicklisp-systems: apropos name %s*" pattern)))
+    (when (get-buffer buffer-name)
+      (pop-to-buffer buffer-name)
+      (return-from quicklisp-systems-apropos-name))
+    (let ((buffer (get-buffer-create buffer-name)))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
 
-(defun quicklisp-systems-apropos-author (pattern)
+(defun* quicklisp-systems-apropos-author (pattern)
   "Apropos Quicklisp systems by author."
   (interactive "sQuicklisp apropos author:")
   (quicklisp-systems--check-systems-list)
-  (let ((systems (slime-eval `(quicklisp-systems::apropos-author ,pattern))))
-    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos author %s*" pattern))))
+  (let ((systems (slime-eval `(quicklisp-systems::apropos-author ,pattern)))
+	(buffer-name (format "*quicklisp-systems: apropos author %s*" pattern)))
+    (when (get-buffer buffer-name)
+      (pop-to-buffer buffer-name)
+      (return-from quicklisp-systems-apropos-author))
+    (let ((buffer (get-buffer-create buffer-name)))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
@@ -118,12 +130,16 @@
     (when (yes-or-no-p "Systems list is empty. Download? ")
       (quicklisp-systems-update))))
 
-(defun quicklisp-systems-list ()
+(defun* quicklisp-systems-list ()
   "Show a buffer with all quicklisp systems"
   (interactive)
   (quicklisp-systems--check-systems-list)
-  (let ((systems (slime-eval `(quicklisp-systems::list-all-systems))))
-    (let ((buffer (get-buffer-create "*quicklisp-systems: system list*")))
+  (let ((systems (slime-eval `(quicklisp-systems::list-all-systems)))
+	(buffer-name "*quicklisp-systems: system list*"))
+    (when (get-buffer buffer-name)
+      (pop-to-buffer buffer-name)
+      (return-from quicklisp-systems-list))
+    (let ((buffer (get-buffer-create buffer-name)))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
