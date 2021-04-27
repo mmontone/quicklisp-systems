@@ -37,6 +37,8 @@ In Emacs, add this repository path to `load-path` and add `quicklisp-systems` to
 - `M-x quickload`: Load a Quicklisp system.
 - `M-x quicklisp-systems-update`: update the list of Quicklisp systems (this extension downloads a "systems file" with information of ASDF systems in Quicklisp to operate).
 
+Use `q` to kill individual buffers, and `Q` to kill all quicklisp-systems buffers at once.
+
 ## License
 
 MIT
