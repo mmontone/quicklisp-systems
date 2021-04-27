@@ -21,6 +21,18 @@
 (require 'slime)
 (require 'cl)
 
+(defface quicklisp-systems-title
+  '((t :weight bold
+       :height 1.2
+       ))
+  "quicklisp-systems face for system title"
+  :group 'quicklisp-systems-faces)
+
+(defface quicklisp-systems-attribute
+  '((t (:inherit 'bold)))
+  "quicklisp-systems face for system attribute"
+  :group 'quicklisp-systems-faces)
+
 (defun quicklisp-systems--horizontal-line (&rest width)
   (make-string (or width 80) ?\u2500))
 
@@ -62,10 +74,10 @@
 
 (defun* quicklisp-systems-apropos (pattern)
   "Apropos Quicklisp systems."
-  (interactive "sQuicklisp apropos:")
+  (interactive "sQuicklisp apropos: ")
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern t)))
-	(buffer-name (format "*quicklisp-systems: apropos %s*" pattern)))
+        (buffer-name (format "*quicklisp-systems: apropos %s*" pattern)))
     (when (get-buffer buffer-name)
       (pop-to-buffer buffer-name)
       (return-from quicklisp-systems-apropos))
@@ -76,10 +88,10 @@
 
 (defun* quicklisp-systems-apropos-name (pattern)
   "Apropos Quicklisp systems by name."
-  (interactive "sQuicklisp apropos system name:")
+  (interactive "sQuicklisp apropos system name: ")
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern)))
-	(buffer-name (format "*quicklisp-systems: apropos name %s*" pattern)))
+        (buffer-name (format "*quicklisp-systems: apropos name %s*" pattern)))
     (when (get-buffer buffer-name)
       (pop-to-buffer buffer-name)
       (return-from quicklisp-systems-apropos-name))
@@ -90,10 +102,10 @@
 
 (defun* quicklisp-systems-apropos-author (pattern)
   "Apropos Quicklisp systems by author."
-  (interactive "sQuicklisp apropos author:")
+  (interactive "sQuicklisp apropos author: ")
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::apropos-author ,pattern)))
-	(buffer-name (format "*quicklisp-systems: apropos author %s*" pattern)))
+        (buffer-name (format "*quicklisp-systems: apropos author %s*" pattern)))
     (when (get-buffer buffer-name)
       (pop-to-buffer buffer-name)
       (return-from quicklisp-systems-apropos-author))
@@ -104,10 +116,10 @@
 
 (defun quicklisp-load (system-name)
   "Load Quicklisp system."
-  (interactive "sQuickload:")
-  (message "Quickloading %s..." system-name)
+  (interactive "sQuickload: ")
+  (message "Loading %s..." system-name)
   (slime-eval `(ql:quickload ,system-name))
-  (message "%s loaded." system-name))
+  (message "%s loaded" system-name))
 
 (defalias 'quickload 'quicklisp-load)
 
@@ -135,7 +147,7 @@
   (interactive)
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::list-all-systems)))
-	(buffer-name "*quicklisp-systems: system list*"))
+        (buffer-name "*quicklisp-systems: system list*"))
     (when (get-buffer buffer-name)
       (pop-to-buffer buffer-name)
       (return-from quicklisp-systems-list))
@@ -151,7 +163,7 @@
   (interactive)
   (message "Downloading list of Quicklisp systems...")
   (slime-eval `(quicklisp-systems::download-systems-file))
-  (message "Quicklisp systems updated."))
+  (message "Quicklisp systems updated"))
 
 (defun quicklisp-systems--open-buffer ()
   (let ((buffer (current-buffer)))
@@ -165,9 +177,9 @@
 
 (defun* quicklisp-systems-show-system (system-name)
   "Show Quicklisp system SYSTEM-NAME."
-  (interactive "sShow Quicklisp system:")
+  (interactive "sShow Quicklisp system: ")
   (let ((system (slime-eval `(quicklisp-systems::find-system-info ,system-name)))
-	(buffer-name (format "*quicklisp-systems: %s*" system-name)))
+        (buffer-name (format "*quicklisp-systems: %s*" system-name)))
     (when (get-buffer buffer-name)
       (pop-to-buffer buffer-name)
       (return-from quicklisp-systems-show-system))
@@ -175,29 +187,29 @@
         (error "Quicklisp system not found: %s" system-name)
       (let ((buffer (get-buffer-create buffer-name)))
         (with-current-buffer buffer
-          (insert (propertize (getf system :name) 'face 'bold))
+          (insert (propertize (getf system :name) 'face 'quicklisp-systems-title))
           (newline 2)
           (when (getf system :description)
             (insert (quicklisp-systems--format-text (getf system :description)))
             (newline 2))
           (when (stringp (getf system :author))
-            (insert (propertize "Author: " 'face 'bold))
+            (insert (propertize "Author: " 'face 'quicklisp-systems-attribute))
             (insert (getf system :author))
             (newline))
           (when (stringp (getf system :homepage))
-            (insert (propertize "Homepage: " 'face 'bold))
+            (insert (propertize "Homepage: " 'face 'quicklisp-systems-attribute))
             (insert (quicklisp-systems--format-text (getf system :homepage)))
             (newline))
           (when (stringp (getf system :bug-tracker))
-            (insert (propertize "Bug tracker: " 'face 'bold))
+            (insert (propertize "Bug tracker: " 'face 'quicklisp-systems-attribute))
             (insert (quicklisp-systems--format-text (getf system :bug-tracker)))
             (newline))
           (when (stringp (getf system :version))
-            (insert (propertize "Version: " 'face 'bold))
+            (insert (propertize "Version: " 'face 'quicklisp-systems-attribute))
             (insert (quicklisp-systems--format-text (getf system :version)))
             (newline))
           (when (getf system :depends-on)
-            (insert (propertize "Dependencies: " 'face 'bold))
+            (insert (propertize "Dependencies: " 'face 'quicklisp-systems-attribute))
             (dolist (dependency (getf system :depends-on))
               (insert-button dependency
                              'action (lambda (btn)
