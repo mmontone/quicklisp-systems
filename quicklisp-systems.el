@@ -37,6 +37,15 @@
   (interactive)
   (kill-buffer (current-buffer)))
 
+(defun quicklisp-systems-kill-all-buffers ()
+  "Kill all slime-help buffers at once."
+  (interactive)
+  (mapcar 'kill-buffer
+          (remove-if-not
+           (lambda (buffer)
+             (string-prefix-p "*quicklisp-systems" (buffer-name buffer)))
+           (buffer-list))))
+
 (defun quicklisp-systems-apropos (pattern)
   "Apropos Quicklisp systems."
   (interactive "sQuicklisp apropos:")
@@ -118,6 +127,7 @@
   (let ((buffer (current-buffer)))
     (setq buffer-read-only t)
     (local-set-key "q" 'quicklisp-systems--kill-current-buffer)
+    (local-set-key "Q" 'quicklisp-systems-kill-all-buffers)
     (buffer-disable-undo)
     (set (make-local-variable 'kill-buffer-query-functions) nil)
     (goto-char 0)
