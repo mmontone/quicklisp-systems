@@ -16,7 +16,7 @@
   (interactive "sQuicklisp apropos:")
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern t))))
-    (let ((buffer (get-buffer-create "*quicklisp-systems: apropos system list*")))
+    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos %s*" pattern))))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
@@ -26,7 +26,7 @@
   (interactive "sQuicklisp apropos:")
   (quicklisp-systems--check-systems-list)
   (let ((systems (slime-eval `(quicklisp-systems::apropos-system ,pattern))))
-    (let ((buffer (get-buffer-create "*quicklisp-systems: apropos system list*")))
+    (let ((buffer (get-buffer-create (format "*quicklisp-systems: apropos %s by name*" pattern))))
       (with-current-buffer buffer
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
