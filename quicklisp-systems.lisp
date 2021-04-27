@@ -10,7 +10,6 @@
 (in-package #:quicklisp-systems)
 
 (defparameter *quicklisp-projects-directory* #p"~/quicklisp-controller/")
-(defvar *systems-info*)
 (defvar *systems-file* (merge-pathnames "systems" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
 
 (defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
@@ -78,13 +77,6 @@
                           :if-exists :supersede)
     (serialize-asdf-systems (asdf/system-registry:registered-systems*)
                             f)))
-
-(defun read-systems-file (&optional (path *systems-file*))
-  (setq *systems-info*
-        (with-open-file (f path :direction :input :external-format :utf-8)
-          (loop for system := (read f nil nil)
-                while system
-                collect system))))
 
 (defun check-systems-list ()
   (and (probe-file *systems-file*) t))
