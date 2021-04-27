@@ -6,6 +6,8 @@ Author: Mariano Montone <marianomontone@gmail.com>
 
 THIS IS WORK IN PROGRESS WORK.
 
+![screenshot](screenshot.png "screenshot")
+
 ## Install
 
 Load `swank` and add this repository path to `swank::*load-path*`, in your Lisp compiler init file (~/.sbclrc if using SBCL):
