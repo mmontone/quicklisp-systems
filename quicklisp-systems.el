@@ -163,7 +163,7 @@
     (goto-char 0)
     (pop-to-buffer buffer)))
 
-(defun quicklisp-systems-show-system (system-name)
+(defun* quicklisp-systems-show-system (system-name)
   "Show Quicklisp system SYSTEM-NAME."
   (interactive "sShow Quicklisp system:")
   (let ((system (slime-eval `(quicklisp-systems::find-system-info ,system-name)))
