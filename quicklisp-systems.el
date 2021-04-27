@@ -7,6 +7,29 @@
 (require 'slime)
 (require 'cl)
 
+(defun quicklisp-systems--propertize-links (string)
+  "Convert URL links in strings to buttons."
+  (replace-regexp-in-string
+   (rx (group (or string-start space "<"))
+       (group "http" (? "s") "://" (+? (not (any space))))
+       (group (? (any "." ">" ")"))
+              (or space string-end ">")))
+   (lambda (match)
+     (let ((space-before (match-string 1 match))
+           (url (match-string 2 match))
+           (after (match-string 3 match)))
+       (concat
+        space-before
+        (slime-help--button
+         url
+         'slime-help-link-button
+         'url url)
+        after)))
+   string))
+
+(defun quicklisp-systems--format-text (text)
+  (quicklisp-systems--propertize-links text))
+
 (defun quicklisp-systems--kill-current-buffer ()
   (interactive)
   (kill-buffer (current-buffer)))
@@ -108,7 +131,7 @@
           (insert (propertize (getf system :name) 'face 'bold))
           (newline 2)
           (when (getf system :description)
-            (insert (getf system :description))
+            (insert (quicklisp-systems--format-text (getf system :description)))
             (newline 2))
 	  (when (stringp (getf system :author))
 	    (insert (propertize "Author: " 'face 'bold))
@@ -116,11 +139,11 @@
 	    (newline))
 	  (when (stringp (getf system :homepage))
 	    (insert (propertize "Homepage: " 'face 'bold))
-	    (insert (getf system :homepage))
+	    (insert (quicklisp-systems--format-text (getf system :homepage)))
 	    (newline))
 	  (when (stringp (getf system :bug-tracker))
 	    (insert (propertize "Bug tracker: " 'face 'bold))
-	    (insert (getf system :bug-tracker))
+	    (insert (quicklisp-systems--format-text (getf system :bug-tracker)))
 	    (newline))
 	  (newline)
           (insert-button "Load"
@@ -130,7 +153,7 @@
                          'help-echo "Load Quicklisp system")
           (newline 2)
           (when (getf system :long-description)
-            (insert (getf system :long-description))
+            (insert (quicklisp-systems--format-text (getf system :long-description)))
             (newline 2))
 
           (quicklisp-systems--open-buffer))))))
