@@ -150,10 +150,14 @@
 (defun quicklisp-systems-show-system (system-name)
   "Show Quicklisp system SYSTEM-NAME."
   (interactive "sShow Quicklisp system:")
-  (let ((system (slime-eval `(quicklisp-systems::find-system-info ,system-name))))
+  (let ((system (slime-eval `(quicklisp-systems::find-system-info ,system-name)))
+	(buffer-name (format "*quicklisp-systems: %s*" system-name)))
+    (when (get-buffer buffer-name)
+      (pop-to-buffer buffer-name)
+      (return-from quicklisp-systems-show-system))
     (if (null system)
         (error "Quicklisp system not found: %s" system-name)
-      (let ((buffer (get-buffer-create (format "*quicklisp-systems: %s*" system-name))))
+      (let ((buffer (get-buffer-create buffer-name)))
         (with-current-buffer buffer
           (insert (propertize (getf system :name) 'face 'bold))
           (newline 2)
