@@ -21,7 +21,7 @@
         (quicklisp-systems--print-systems-list systems)
         (quicklisp-systems--open-buffer)))))
 
-(defun quicklisp-systems-apropos-names (pattern)
+(defun quicklisp-systems-apropos-name (pattern)
   "Apropos Quicklisp systems by name."
   (interactive "sQuicklisp apropos:")
   (quicklisp-systems--check-systems-list)

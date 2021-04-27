@@ -1,6 +1,5 @@
 ;;;; quicklisp-systems.lisp
 
-(require :alexandria)
 (require :dexador)
 (require :asdf)
 (require :quicklisp)
@@ -16,6 +15,14 @@
 
 (defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode"))
 (defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
+
+(defmacro do-systems ((system &optional (path *systems-file*)) &body body)
+  (let ((f (gensym)))
+    `(when (probe-file ,path)
+       (with-open-file (,f ,path :direction :input :external-format :utf-8)
+	 (loop for ,system := (read ,f nil nil)
+	       while ,system
+	       do ,@body)))))
 
 (defun register-all-asdf-files (&optional (quicklisp-projects-directory *quicklisp-projects-directory*))
   (let ((output
@@ -81,14 +88,6 @@
 
 (defun check-systems-list ()
   (and (probe-file *systems-file*) t))
-
-(defmacro do-systems ((system &optional (path *systems-file*)) &body body)
-  (alexandria:with-gensyms (f)
-    `(when (probe-file ,path)
-       (with-open-file (,f ,path :direction :input :external-format :utf-8)
-	 (loop for ,system := (read ,f nil nil)
-	       while ,system
-	       do ,@body)))))
 
 (defun list-all-systems ()
   (let (systems)
