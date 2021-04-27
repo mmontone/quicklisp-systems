@@ -145,6 +145,10 @@
 	    (insert (propertize "Bug tracker: " 'face 'bold))
 	    (insert (quicklisp-systems--format-text (getf system :bug-tracker)))
 	    (newline))
+	  (when (stringp (getf system :version))
+	    (insert (propertize "Version: " 'face 'bold))
+	    (insert (quicklisp-systems--format-text (getf system :version)))
+	    (newline))
 	  (newline)
           (insert-button "Load"
                          'action (lambda (btn)
