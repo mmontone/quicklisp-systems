@@ -2,10 +2,6 @@
 
 Search, browse and load Quicklisp systems from Emacs.
 
-Author: Mariano Montone <marianomontone@gmail.com>
-
-THIS IS WORK IN PROGRESS WORK.
-
 ![screenshot](screenshot.png "screenshot")
 
 ## Install
