@@ -279,14 +279,16 @@
  '("Quicklisp systems"
    ["List all systems" quicklisp-systems-list
     :help "List all available Quicklisp systems"]
+   ["Show system" quicklisp-systems-show-system
+    :help "Show information about Quicklisp system"]
+   "---"
    ["Apropos" quicklisp-systems-apropos
     :help "Search a system in Quicklisp"]
    ["Apropos name" quicklisp-systems-apropos-name
     :help "Search Quicklisp systems by name"]
    ["Apropos author" quicklisp-systems-apropos-author
     :help "Search Quicklisp systems by author"]
-   ["Show system" quicklisp-systems-show-system
-    :help "Show information about Quicklisp system"]
+   "---"
    ["Update systems list" quicklisp-systems-update
     :help "Update the list of Quicklisp systems"]
    ["Quit" quicklisp-systems-quit
