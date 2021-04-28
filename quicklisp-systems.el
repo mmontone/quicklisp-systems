@@ -77,7 +77,7 @@
   (interactive)
   (kill-buffer (current-buffer)))
 
-(defun quicklisp-systems-kill-all-buffers ()
+(defun quicklisp-systems-quit ()
   "Kill all slime-help buffers at once."
   (interactive)
   (mapcar 'kill-buffer
@@ -182,11 +182,10 @@
 (defun quicklisp-systems--open-buffer ()
   (let ((buffer (current-buffer)))
     (setq buffer-read-only t)
-    (local-set-key "q" 'quicklisp-systems--kill-current-buffer)
-    (local-set-key "Q" 'quicklisp-systems-kill-all-buffers)
     (buffer-disable-undo)
     (set (make-local-variable 'kill-buffer-query-functions) nil)
     (goto-char 0)
+    (quicklisp-systems-mode)
     (pop-to-buffer buffer)))
 
 (defun* quicklisp-systems-show-system (system-name)
@@ -260,6 +259,38 @@
 
 ;; (quicklisp-systems-show-system "hunchentoot")
 ;; (quicklisp-systems-show-system "ten")
+
+(defvar quicklisp-systems-mode-map
+  (let ((map (make-keymap)))
+    (define-key map "q" 'quicklisp-systems--kill-current-buffer)
+    (define-key map "Q" 'quicklisp-systems-quit)
+    map))
+
+(define-minor-mode quicklisp-systems-mode
+  "Quicklisp systems minor mode."
+  :init-value nil
+  :lighter " QuicklispSystems"
+  :keymap quicklisp-systems-mode-map
+  :group 'quicklisp-systems)
+
+(easy-menu-define
+ quicklisp-systems-mode-menu quicklisp-systems-mode-map
+ "Menu for Quicklisp systems."
+ '("Quicklisp systems"
+   ["List all systems" quicklisp-systems-list
+    :help "List all available Quicklisp systems"]
+   ["Apropos" quicklisp-systems-apropos
+    :help "Search a system in Quicklisp"]
+   ["Apropos name" quicklisp-systems-apropos-name
+    :help "Search Quicklisp systems by name"]
+   ["Apropos author" quicklisp-systems-apropos-author
+    :help "Search Quicklisp systems by author"]
+   ["Show system" quicklisp-systems-show-system
+    :help "Show information about Quicklisp system"]
+   ["Update systems list" quicklisp-systems-update
+    :help "Update the list of Quicklisp systems"]
+   ["Quit" quicklisp-systems-quit
+    :help "Quit Quicklisp systems"]))
 
 (define-slime-contrib quicklisp-systems
   "Manage Quicklisp from Emacs"
