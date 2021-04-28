@@ -21,6 +21,13 @@
 (require 'slime)
 (require 'cl)
 
+(defface quicklisp-systems-button
+  '((t (:box (:line-width 2 :color "dark grey")
+	     :background "light grey"
+	     :foreground "black")))
+  "quicklisp-systems face for buttons"
+  :group 'quicklisp-systems-faces)
+
 (defface quicklisp-systems-title
   '((t :weight bold
        :height 1.2
@@ -32,6 +39,13 @@
   '((t (:inherit 'bold)))
   "quicklisp-systems face for system attribute"
   :group 'quicklisp-systems-faces)
+
+(defcustom quicklisp-systems-search-url
+  "https://www.google.com/search?q=common lisp "
+  "URL used to search a Lisp library on the internet.")
+
+(defun quicklisp-systems-search-on-the-internet (library-name)
+  (browse-url (concat quicklisp-systems-search-url library-name)))
 
 (defun quicklisp-systems--horizontal-line (&rest width)
   (make-string (or width 80) ?\u2500))
@@ -218,12 +232,22 @@
               (insert " "))
             (newline))
           (newline)
+
+	  ;; buttons
           (insert-button "Load"
                          'action (lambda (btn)
                                    (quicklisp-load system-name))
                          'follow-link t
                          'help-echo "Load Quicklisp system"
-			 'face '(:box (:line-width 2 :color "dark grey") :background "light grey" :foreground "black"))
+			 'face 'quicklisp-systems-button)
+	  (when (not (stringp (getf system :homepage)))
+	    (insert " ")
+	    (insert-button "Search on the internet"
+			   'action (lambda (btn)
+				     (quicklisp-systems-search-on-the-internet system-name))
+			   'follow-link t
+			   'help-echo "Search the library on the internet"
+			   'face 'quicklisp-systems-button))
 	  (newline 2)
 
           (when (getf system :long-description)
