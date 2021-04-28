@@ -279,19 +279,21 @@
 (easy-menu-define
  quicklisp-systems-mode-menu quicklisp-systems-mode-map
  "Menu for Quicklisp systems."
- '("Quicklisp systems"
+ '("Quicklisp"
    ["List all systems" quicklisp-systems-list
     :help "List all available Quicklisp systems"]
-   ["Show system" quicklisp-systems-show-system
+   ["Show system..." quicklisp-systems-show-system
     :help "Show information about Quicklisp system"]
    "---"
-   ["Apropos" quicklisp-systems-apropos
+   ["Apropos..." quicklisp-systems-apropos
     :help "Search a system in Quicklisp"]
-   ["Apropos name" quicklisp-systems-apropos-name
+   ["Apropos name..." quicklisp-systems-apropos-name
     :help "Search Quicklisp systems by name"]
-   ["Apropos author" quicklisp-systems-apropos-author
+   ["Apropos author..." quicklisp-systems-apropos-author
     :help "Search Quicklisp systems by author"]
    "---"
+   ["Load system..." quicklisp-load
+    :help "Quickload a system"]
    ["Update systems list" quicklisp-systems-update
     :help "Update the list of Quicklisp systems"]
    ["Quit" quicklisp-systems-quit
@@ -300,9 +302,11 @@
 (defun quicklisp-systems--add-to-slime-menu ()
   (easy-menu-add-item 'menubar-slime nil '("---"))
   (easy-menu-add-item 'menubar-slime nil
-		      '("Quicklisp systems"
-			["Quicklisp systems" quicklisp-systems
-			 :help "Open Quicklisp systems list"])))
+		      '("Quicklisp"
+			["Browse systems" quicklisp-systems
+			 :help "Open Quicklisp systems list"]
+			["Load system..." quicklisp-load
+			 :help "Quickload a system"])))
 
 (define-slime-contrib quicklisp-systems
   "Manage Quicklisp from Emacs"
