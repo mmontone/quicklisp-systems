@@ -297,12 +297,20 @@
    ["Quit" quicklisp-systems-quit
     :help "Quit Quicklisp systems"]))
 
+(defun quicklisp-systems--add-to-slime-menu ()
+  (easy-menu-add-item 'menubar-slime nil '("---"))
+  (easy-menu-add-item 'menubar-slime nil
+		      '("Quicklisp systems"
+			["Quicklisp systems" quicklisp-systems
+			 :help "Open Quicklisp systems list"])))
+
 (define-slime-contrib quicklisp-systems
   "Manage Quicklisp from Emacs"
   (:authors "Mariano Montone")
   (:license "GPL")
-  ;;(:slime-dependencies slime-asdf)
-  (:swank-dependencies quicklisp-systems))
+  (:swank-dependencies quicklisp-systems)
+  (:on-load
+   (quicklisp-systems--add-to-slime-menu)))
 
 (provide 'quicklisp-systems)
 
