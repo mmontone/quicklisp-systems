@@ -26,7 +26,7 @@
 (defvar *systems-file* (merge-pathnames "systems" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
 (defvar *failed-asdf-files* nil
   "Contains a list of ASDF files that failed to be loaded and the error, after calling REGISTER-ALL-ASDF-FILES.")
-(defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode")
+(defparameter *conflictive-asdf-files* '("cl-quakeinfo" "qt-libs" "cl-geocode" "cl-geoip")
   "Some ASDF files cause conflicts when trying to be loaded. These are ignored.")
 (defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems")
 
@@ -38,33 +38,35 @@
 	       while ,system
 	       do ,@body)))))
 
+(defun find-files-do (path pattern function &optional (include-subdirectories t))
+  "Find files in PATH using PATTERN. Invokes FUNCTION on found files.
+If INCLUDE-SUBDIRECTORIES is T, then work recursively."
+  (dolist (file (uiop/filesystem:directory-files path pattern))
+    (funcall function file))
+  (when include-subdirectories
+    (dolist (subdir (uiop/filesystem:subdirectories path))
+      (find-files-do subdir pattern function include-subdirectories))))
+
 (defun register-all-asdf-files (&optional (quicklisp-controller-directory *quicklisp-controller-directory*))
   (setf *failed-asdf-files* nil)
   (format *standard-output* "Finding ASDF files...~%")
-  (let ((output
-          (with-output-to-string (s)
-            (uiop/run-program:run-program
-             (format nil "/usr/bin/find -P ~a -name *.asd"
-                     (merge-pathnames #p"upstream-cache/" quicklisp-controller-directory))
-             :output s))))
-    (with-input-from-string (s output)
-      (loop for line := (read-line s nil nil)
-            while line
-            when (and (probe-file line)
-		      ;; conflictive asdf system files
-		      (not (some (lambda (conflictive-system-name)
-				   (search conflictive-system-name line :test 'equalp))
-				 *conflictive-asdf-files*)))
-              do
-                 (format *standard-output* "Loading ~a" line)
-                 (handler-case (progn
-                                 (asdf/find-system:load-asd line)
-                                 (format *standard-output* ". Success.~%"))
-                   (error (e)
-                     ;;(error e)
-		     (push (cons line e) *failed-asdf-files*)
-                     (format *standard-output* ". ERROR.~%")
-                     ))))))
+  (find-files-do
+   (merge-pathnames #p"upstream-cache/" quicklisp-controller-directory)
+   "*.asd"
+   (lambda (file)
+     ;; conflictive asdf system files
+     (when (not (some (lambda (conflictive-system-name)
+			(search conflictive-system-name (princ-to-string file) :test 'equalp))
+		      *conflictive-asdf-files*))
+       (format *standard-output* "Loading ~a" file)
+       (handler-case (progn
+		     (asdf/find-system:load-asd file)
+		     (format *standard-output* ". Success.~%"))
+       (error (e)
+	 ;;(error e)
+	 (push (cons file e) *failed-asdf-files*)
+	 (format *standard-output* ". ERROR.~%")
+	 ))))))
 
 (defun serialize-asdf-systems (systems stream)
   (loop for system in systems
