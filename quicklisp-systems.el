@@ -50,6 +50,25 @@
 (defun quicklisp-systems--horizontal-line (&rest width)
   (make-string (or width 80) ?\u2500))
 
+(defun quicklisp-systems--follow-link (button)
+  "Follow the URL specified by BUTTON."
+  (browse-url (button-get button 'url)))
+
+(defun quicklisp-systems--button (text type &rest properties)
+  ;; `make-text-button' mutates our string to add properties. Copy
+  ;; TEXT to prevent mutating our arguments, and to support 'pure'
+  ;; strings, which are read-only.
+  (setq text (substring-no-properties text))
+  (apply #'make-text-button
+         text nil
+         :type type
+         properties))
+
+(define-button-type 'quicklisp-systems-link-button
+  'action #'quicklisp-systems--follow-link
+  'follow-link t
+  'help-echo "Follow this link")
+
 (defun quicklisp-systems--propertize-links (string)
   "Convert URL links in strings to buttons."
   (replace-regexp-in-string
@@ -63,9 +82,9 @@
            (after (match-string 3 match)))
        (concat
         space-before
-        (slime-help--button
+        (quicklisp-systems--button
          url
-         'slime-help-link-button
+         'quicklisp-systems-link-button
          'url url)
         after)))
    string))
@@ -78,7 +97,7 @@
   (kill-buffer (current-buffer)))
 
 (defun quicklisp-systems-quit ()
-  "Kill all slime-help buffers at once."
+  "Kill all quicklisp-systems buffers at once."
   (interactive)
   (mapcar 'kill-buffer
           (remove-if-not
