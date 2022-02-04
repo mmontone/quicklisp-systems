@@ -35,6 +35,14 @@ In Emacs, add this repository path to `load-path` and add `quicklisp-systems` to
 
 Use `q` to kill individual buffers, and `Q` to kill all quicklisp-systems buffers at once.
 
+## Quicksearch
+
+This repository also contains a simple Emacs frontend for `quicksearch`, that searches for Quicklisp packages on the internet.
+
+It is available on Quicklisp: `(ql:quickload :quicksearch)`.
+
+Just load [quicksearch.el](quicksearch.el) in your Emacs, and then use `M-x quicksearch` Emacs command to trigger a search.
+
 ## License
 
 GPL
