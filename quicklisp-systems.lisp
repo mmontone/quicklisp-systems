@@ -17,7 +17,7 @@
 
 ;; Clone quicklisp-projects and quicklisp-controller repositories.
 ;; Setup quicklisp-controller: (quicklisp-controller:setup-directories "~/src/lisp/quicklisp-projects/")
-;; Update the list of Quicklisp systems using QUICKLISP-CONTROLLER:UPDATE-WHAT-YOU-CAN.
+;; Update the list of Quicklisp systems using QUICKLISP-CONTROLLER::UPDATE-WHAT-YOU-CAN.
 ;; Load all ASDF systems available in *QUICKLISP-CONTROLLER-DIRECTORY* using REGISTER-ALL-ASDF-FILES
 ;; Then use WRITE-SYSTEMS-FILE to serialize to a QUICKLISP-SYSTEM distribution file.
 
@@ -42,9 +42,9 @@
   (let ((f (gensym)))
     `(when (probe-file ,path)
        (with-open-file (,f ,path :direction :input :external-format :utf-8)
-	 (loop for ,system := (read ,f nil nil)
-	       while ,system
-	       do ,@body)))))
+         (loop for ,system := (read ,f nil nil)
+               while ,system
+               do ,@body)))))
 
 (defun find-files-do (path pattern function &optional (include-subdirectories t))
   "Find files in PATH using PATTERN. Invokes FUNCTION on found files.
@@ -65,23 +65,23 @@ If INCLUDE-SUBDIRECTORIES is T, then work recursively."
    (lambda (file)
      ;; conflictive asdf system files
      (when (not (some (lambda (conflictive-system-name)
-			(search conflictive-system-name (princ-to-string file) :test 'equalp))
-		      *conflictive-asdf-files*))
+                        (search conflictive-system-name (princ-to-string file) :test 'equalp))
+                      *conflictive-asdf-files*))
        (format *standard-output* "Loading ~a" file)
        (handler-case (progn
-		     (asdf/find-system:load-asd file)
-		     (format *standard-output* ". Success.~%"))
-       (error (e)
-	 ;;(error e)
-	 (push (cons file e) *failed-asdf-files*)
-	 (format *standard-output* ". ERROR.~%")
-	 ))))))
+                       (asdf/find-system:load-asd file)
+                       (format *standard-output* ". Success.~%"))
+         (error (e)
+           ;;(error e)
+           (push (cons file e) *failed-asdf-files*)
+           (format *standard-output* ". ERROR.~%")
+           ))))))
 
 (defun serialize-asdf-systems (systems stream)
   "Serialize all ASDF SYSTEMS to STREAM."
   (loop for system in systems
         do
-	   (prin1 `(:name ,(slot-value system 'asdf/component::name)
+           (prin1 `(:name ,(slot-value system 'asdf/component::name)
                     :description ,(asdf/component:component-description system)
                     :long-description ,(asdf/component:component-long-description system)
                     :author ,(slot-value system 'asdf/system::author)
@@ -91,7 +91,7 @@ If INCLUDE-SUBDIRECTORIES is T, then work recursively."
                     :bug-tracker ,(slot-value system 'asdf/system::bug-tracker)
                     :version ,(slot-value system 'asdf/system::version)
                     :license ,(slot-value system 'asdf/system::licence)
-		    :depends-on ,(remove-if-not 'stringp (slot-value system 'asdf/system::depends-on)))
+                    :depends-on ,(remove-if-not 'stringp (slot-value system 'asdf/system::depends-on)))
                   stream)
            (terpri stream)))
 
@@ -131,7 +131,7 @@ If INCLUDE-SUBDIRECTORIES is T, then work recursively."
   (let (systems)
     (do-systems (system)
       (when (and (getf system :author)
-		 (search author-name (getf system :author) :test 'equalp))
+                 (search author-name (getf system :author) :test 'equalp))
         (push system systems)))
     systems))
 
