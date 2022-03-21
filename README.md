@@ -6,6 +6,8 @@ Search, browse and load Quicklisp systems from Emacs.
 
 ## Install
 
+ℹ️ Please consider using [SLIME :star:](https://github.com/mmontone/slime-star), that comes with this extension preinstalled.
+
 Load `swank` and add this repository path to `swank::*load-path*`, in your Lisp compiler init file (~/.sbclrc if using SBCL):
 
 ```lisp
