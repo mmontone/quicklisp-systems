@@ -150,7 +150,10 @@
 
 (defun quicklisp-load (cl-system-name)
   "Load Quicklisp system."
-  (interactive "sQuickload: ")
+  (interactive (list (completing-read
+		      "Quickload: "
+		      (mapcar (lambda (system) (getf system :name)) (slime-eval `(quicklisp-systems::list-all-systems)))
+		      nil nil)))
   (message "Loading %s..." cl-system-name)
   (slime-eval `(ql:quickload ,cl-system-name))
   (message "%s loaded" cl-system-name))
