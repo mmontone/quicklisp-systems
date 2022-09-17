@@ -4,6 +4,8 @@ Search, browse and load Quicklisp systems from Emacs.
 
 ![screenshot](screenshot.png "screenshot")
 
+![completion](completion.gif "completion")
+
 ## Install
 
 ℹ️ Please consider using [SLIME :star:](https://github.com/mmontone/slime-star), that comes with this extension preinstalled.
