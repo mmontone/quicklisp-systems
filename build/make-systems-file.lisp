@@ -9,7 +9,7 @@
 ;; - Use WRITE-SYSTEMS-FILE to serialize to a QUICKLISP-SYSTEM distribution file.
 ;; - Upload the file to the URL in QUICKLISP-SYSTEMS::*SYSTEMS-FILE-URL*
 
-(require :quicklisp-systems)
+(require :quicklisp-systems #p"../quicklisp-systems.lisp")
 
 (defpackage #:quicklisp-systems-file
   (:use #:cl))
@@ -76,3 +76,7 @@ If INCLUDE-SUBDIRECTORIES is T, then work recursively."
                           :if-exists :supersede)
     (serialize-asdf-systems (asdf/system-registry:registered-systems*)
                             f)))
+
+(defun make-systems-file ()
+  (register-all-asdf-files)
+  (write-systems-file))
