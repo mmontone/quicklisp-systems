@@ -7,7 +7,7 @@
 ;; - Update the list of Quicklisp systems using QUICKLISP-CONTROLLER::UPDATE-WHAT-YOU-CAN.
 ;; - Load all ASDF systems available in *QUICKLISP-CONTROLLER-DIRECTORY* using REGISTER-ALL-ASDF-FILES
 ;; - Use WRITE-SYSTEMS-FILE to serialize to a QUICKLISP-SYSTEM distribution file.
-;; - Upload the file to the URL in QUICKLISP-SYSTEMS::*SYSTEMS-FILE-URL*
+;; - Compress the file using gzip and upload it to the URL in QUICKLISP-SYSTEMS::*SYSTEMS-FILE-URL*
 
 (require :quicklisp-systems #p"../quicklisp-systems.lisp")
 
