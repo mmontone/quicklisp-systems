@@ -16,14 +16,15 @@
 (require :dexador)
 (require :asdf)
 (require :quicklisp)
+(require :chipz)
 
 (defpackage #:quicklisp-systems
   (:use #:cl))
 
 (in-package #:quicklisp-systems)
 
-(defvar *systems-file* (merge-pathnames "systems" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
-(defparameter *systems-file-url* "https://bitbucket.org/mmontone/quicklisp-systems/downloads/systems"
+(defvar *systems-file* (merge-pathnames "quicklisp-systems-list" (uiop/pathname:pathname-directory-pathname *load-pathname*)))
+(defparameter *systems-file-url* "https://github.com/mmontone/quicklisp-systems/releases/latest/download/quicklisp-systems-list.gz"
   "The URL from where to download the file with Quicklisp systems descriptions.")
 
 (defmacro do-systems ((system &optional (path *systems-file*)) &body body)
@@ -68,9 +69,20 @@
         (push system systems)))
     systems))
 
+(defun gunzip (gzip-filename output-filename)
+  (with-open-file (gzstream gzip-filename :direction :input
+                            :element-type '(unsigned-byte 8))
+    (with-open-file (stream output-filename :direction :output
+                            :element-type '(unsigned-byte 8)
+                            :if-exists :supersede)
+      (chipz:decompress stream 'chipz:gzip gzstream)
+      output-filename)))
+
 (defun download-systems-file (&optional (url *systems-file-url*))
   (format t "Downloading quicklisp systems file from ~a ~%" url)
-  (dex:fetch url *systems-file* :if-exists :supersede)
+  (ql-util:with-temporary-file (systems-file-list.gz (pathname-name *systems-file*))
+    (dex:fetch url systems-file-list.gz)
+    (gunzip systems-file-list.gz *systems-file*)) 
   (format t "Systems file downloaded to ~a~%" *systems-file*))
 
 (provide :quicklisp-systems)
